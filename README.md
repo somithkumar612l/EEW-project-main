@@ -153,12 +153,12 @@ frontend/index.html
 ## Academic Details
 
 - Project Type: Mini Project  
-- Degree: B.Tech  
-- Branch: Computer Science Engineering (AI & ML)  
+- Degree 
+- Branch: Data Science Engineering (AI & ML)  
 - Purpose: Academic & educational learning  
 
 ## Author
 
-Raj Kumar Paswan  
-B.Tech – Computer Science Engineering (Artificial Intelligence & Machine Learning)
+somith
+degree– Data Science Engineering (Artificial Intelligence & Machine Learning)  
 
