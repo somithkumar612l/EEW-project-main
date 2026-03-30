@@ -159,6 +159,6 @@ frontend/index.html
 
 ## Author
 
-somith
+somith kumar  
 degree– Data Science Engineering (Artificial Intelligence & Machine Learning)  
 
