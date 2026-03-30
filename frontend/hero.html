@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>EEW System — Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- NAVBAR (UNCHANGED) -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-800">EEW System</h1>
+
+    <div class="space-x-4">
+      <a href="hero.html" class="text-blue-600 font-semibold">Home</a>
+      <a href="predict.html" class="text-gray-700 hover:text-blue-600">Prediction</a>
+      <a href="dataset.html" class="text-gray-700 hover:text-blue-600">Dataset</a>
+      <a href="help.html" class="text-gray-700 hover:text-blue-600">Help</a>
+      <a href="about.html" class="text-gray-700 hover:text-blue-600">About</a>
+
+      <button id="logoutBtn"
+        class="border border-red-600 text-red-600 px-4 py-2 rounded-md hover:bg-red-50 transition">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION (SAME SIZE AS INDEX) -->
+  <section class="px-6 py-16 bg-white text-center shadow-sm">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight">
+      Earthquake Early Warning System
+    </h2>
+
+    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+      A machine-learning-powered system that predicts earthquake epicenters using seismic P-wave arrival times.
+    </p>
+
+    <!-- ✅ ONLY DIFFERENCE -->
+    <a href="predict.html"
+      class="inline-block mt-8 bg-blue-600 text-white px-8 py-3 rounded-md text-lg font-semibold shadow hover:bg-blue-700 transition">
+      Go to Prediction
+    </a>
+  </section>
+
+  <!-- INFO SECTION (EXACT SAME AS INDEX) -->
+  <section class="px-6 py-14 bg-gray-50 text-center">
+    <h3 class="text-3xl font-bold text-gray-800">What is an Early Warning System?</h3>
+
+    <p class="mt-4 text-gray-600 max-w-2xl mx-auto text-lg">
+      An Earthquake Early Warning (EEW) system provides alerts seconds before major shaking occurs.
+      This project demonstrates how machine learning can estimate the origin of an earthquake using
+      only the first seismic waves detected by sensors.
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-6 bg-gray-900 text-gray-300 mt-auto">
+    © 2025 Earthquake Early Warning System — All Rights Reserved.
+  </footer>
+
+  <!-- AUTH LOGIC -->
+  <script>
+    const token = localStorage.getItem("eew_token");
+
+    if (!token) {
+      window.location.replace("index.html");
+    }
+
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("eew_token");
+      window.location.replace("index.html");
+    };
+  </script>
+
+</body>
+</html>

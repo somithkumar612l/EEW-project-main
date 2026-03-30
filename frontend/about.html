@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>About — EEW System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">EEW System</h1>
+
+    <div class="space-x-6 flex items-center">
+
+      <a id="homeLink" href="index.html" class="text-gray-700 hover:text-blue-600">Home</a>
+      <a href="predict.html" class="text-gray-700 hover:text-blue-600">Prediction</a>
+      <a href="dataset.html" class="text-gray-700 hover:text-blue-600">Dataset</a>
+      <a href="help.html" class="text-gray-700 hover:text-blue-600">Help</a>
+      <a href="about.html" class="text-blue-600 font-semibold">About</a>
+
+      <!-- Shown when NOT logged in -->
+      <a id="registerBtn"
+        href="register.html"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+        Register
+      </a>
+
+      <a id="loginBtn"
+        href="login.html"
+        class="border border-blue-600 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50">
+        Login
+      </a>
+
+      <!-- Show only when logged-in -->
+      <button id="logoutBtn"
+        class="hidden border border-red-600 text-red-600 px-4 py-2 rounded-md hover:bg-red-50 transition">
+        Logout
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ABOUT CONTENT -->
+  <section class="py-20 px-6">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-10">
+
+      <h2 class="text-4xl font-bold text-gray-800 text-center mb-6">
+        About Earthquake Early Warning System
+      </h2>
+
+      <p class="text-gray-700 text-lg leading-relaxed mb-6">
+        The Earthquake Early Warning (EEW) System is a machine-learning powered platform designed to
+        predict earthquake epicenters using real seismic P-wave arrival times. The dataset originates from the
+        Japan Meteorological Agency (JMA), cleaned and refined for high prediction accuracy.
+      </p>
+
+      <p class="text-gray-700 text-lg leading-relaxed mb-6">
+        The purpose of this project is to demonstrate the potential of AI in providing rapid earthquake alerts
+        before destructive shaking begins. This system is made for educational and research purposes.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4">Key Features</h3>
+
+      <ul class="list-disc ml-6 text-gray-700 text-lg space-y-2">
+        <li>Accurate epicenter prediction using ML techniques.</li>
+        <li>Clean, high-quality seismic datasets from JMA.</li>
+        <li>Fast, user-friendly prediction UI.</li>
+        <li>Academic demonstration of early warning technology.</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mt-10 mb-4">Project Motivation</h3>
+
+      <p class="text-gray-700 text-lg leading-relaxed mb-6">
+        Earthquakes cannot be prevented, but their effects can be reduced using fast alerts.  
+        This project shows how P-wave detection and machine learning can contribute to safer, more efficient early warning systems.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mt-10 mb-4">Technologies Used</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-gray-50 p-6 rounded-xl shadow">
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Machine Learning</h4>
+          <p class="text-gray-700">Random Forest, MultiOutput Regression, Feature Engineering.</p>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-xl shadow">
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Frontend</h4>
+          <p class="text-gray-700">HTML, Tailwind CSS, Smooth UX.</p>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-xl shadow">
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Backend</h4>
+          <p class="text-gray-700">FastAPI (Python), REST APIs, Model Hosting.</p>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-xl shadow">
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Dataset</h4>
+          <p class="text-gray-700">JMA Earthquake Archives.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-6 bg-gray-900 text-gray-300">
+    © 2025 Earthquake Early Warning System — All Rights Reserved.
+  </footer>
+
+  <!-- LOGIN LOGIC FOR NAVBAR -->
+  <script>
+    const token = localStorage.getItem("eew_token");
+
+    const homeLink = document.getElementById("homeLink");
+    const registerBtn = document.getElementById("registerBtn");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // If logged in → redirect HOME to hero.html + hide login/register
+    if (token) {
+      homeLink.href = "hero.html";
+      registerBtn.classList.add("hidden");
+      loginBtn.classList.add("hidden");
+      logoutBtn.classList.remove("hidden");
+    }
+
+    // Logout logic
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("eew_token");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>

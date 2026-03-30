@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Dashboard — EEW</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- NAV -->
+  <nav class="bg-white shadow mb-6">
+    <div class="container mx-auto px-6 py-4 flex justify-between">
+      <div class="font-bold">EEW Dashboard</div>
+      <div class="space-x-4">
+        <a href="predict.html">Predict</a>
+        <a href="dataset.html">Dataset</a>
+        <a href="help.html">Help</a>
+        <button id="logout" class="border px-3 py-1 rounded">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="container mx-auto px-6">
+
+    <h2 class="text-2xl font-bold mb-4">Welcome to Your Dashboard</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-medium">Your Location</h3>
+        <p id="loc" class="mt-2">Detecting...</p>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-medium">Model Status</h3>
+        <p>Trained on JMA dataset</p>
+        <p>MAE ≈ 2.83 km</p>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-medium">Start Prediction</h3>
+        <a href="predict.html" class="text-blue-600">Go to Prediction Page →</a>
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+logout.onclick = () => {
+  localStorage.removeItem("eew_token");
+  location.href = "index.html";
+};
+
+// user location
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(pos => {
+    loc.innerHTML =
+      `Lat: ${pos.coords.latitude.toFixed(4)}, Lon: ${pos.coords.longitude.toFixed(4)}`;
+  }, err => {
+    loc.innerText = "Location blocked";
+  });
+}
+</script>
+
+</body>
+</html>

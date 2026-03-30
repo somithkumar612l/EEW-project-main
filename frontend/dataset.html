@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Dataset — EEW System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">EEW System</h1>
+
+    <div class="space-x-6 flex items-center">
+
+      <a id="homeLink" href="index.html" class="text-gray-700 hover:text-blue-600">Home</a>
+      <a href="predict.html" class="text-gray-700 hover:text-blue-600">Prediction</a>
+      <a href="dataset.html" class="text-blue-600 font-semibold">Dataset</a>
+      <a href="help.html" class="text-gray-700 hover:text-blue-600">Help</a>
+      <a href="about.html" class="text-gray-700 hover:text-blue-600">About</a>
+
+      <!-- Show only when NOT logged in -->
+      <a id="registerBtn"
+        href="register.html"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+        Register
+      </a>
+
+      <a id="loginBtn"
+        href="login.html"
+        class="border border-blue-600 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50">
+        Login
+      </a>
+
+      <!-- Show only when logged in -->
+      <button id="logoutBtn"
+        class="hidden border border-red-600 text-red-600 px-4 py-2 rounded-md hover:bg-red-50 transition">
+        Logout
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- DATASET SECTION -->
+  <section class="py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+
+      <h2 class="text-4xl font-bold text-gray-800 text-center mb-10">
+        Earthquake Dataset Information
+      </h2>
+
+      <!-- MAIN DESCRIPTION -->
+      <div class="bg-white shadow-xl rounded-2xl p-10 mb-12">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Dataset Overview</h3>
+
+        <p class="text-gray-700 text-lg leading-relaxed mb-4">
+          The dataset used in this Earthquake Early Warning System comes from the Japan Meteorological Agency (JMA).
+          It contains detailed earthquake event records including P-wave arrival times, hypocenter coordinates, and event metadata.
+        </p>
+
+        <p class="text-gray-700 text-lg leading-relaxed mb-4">
+          The data was cleaned, filtered, and standardized to build a machine-learning-ready dataset
+          for training the epicenter prediction model.
+        </p>
+
+        <p class="text-gray-700 text-lg leading-relaxed">
+          Only high-quality events and reliable stations were kept to improve accuracy.
+        </p>
+      </div>
+
+      <!-- PROCESSING STEPS -->
+      <div class="bg-white shadow-xl rounded-2xl p-10 mb-12">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Data Processing Workflow</h3>
+
+        <ul class="list-disc ml-6 text-gray-700 text-lg space-y-3">
+          <li>Extracted raw ZIP archives of annual JMA earthquake logs.</li>
+          <li>Converted large text logs into structured CSV format.</li>
+          <li>Removed incomplete or low-quality seismic readings.</li>
+          <li>Kept only stable, consistently reporting stations.</li>
+          <li>Normalized P-wave arrival times for ML model compatibility.</li>
+          <li>Produced ~16,000 high-quality events for training.</li>
+        </ul>
+      </div>
+
+      <!-- DOWNLOAD SECTION -->
+      <div class="bg-white shadow-xl rounded-2xl p-10 text-center">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Download Dataset</h3>
+
+        <p class="text-gray-700 text-lg mb-6">
+          Download the exact datasets used in the machine learning training.
+        </p>
+
+        <a href="model_files/stations.csv"
+          class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
+          Download Station List
+        </a>
+
+        <br><br>
+
+        <a href="model_files/cleaned_events.csv"
+          class="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-900 transition">
+          Download Cleaned Earthquake Dataset
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-6 bg-gray-900 text-gray-300">
+    © 2025 Earthquake Early Warning System — All Rights Reserved.
+  </footer>
+
+  <!-- LOGIN LOGIC (Home redirect + hide login/register) -->
+  <script>
+    const token = localStorage.getItem("eew_token");
+
+    const homeLink = document.getElementById("homeLink");
+    const registerBtn = document.getElementById("registerBtn");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // If logged in → Home goes to hero.html + hide login/register
+    if (token) {
+      homeLink.href = "hero.html";
+      registerBtn.classList.add("hidden");
+      loginBtn.classList.add("hidden");
+      logoutBtn.classList.remove("hidden");
+    }
+
+    // Logout logic
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("eew_token");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>

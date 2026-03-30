@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Login — EEW System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-gray-800">EEW System</h1>
+  <div class="space-x-6">
+    <a href="index.html" class="hover:text-blue-600">Home</a>
+    <a href="register.html" class="hover:text-blue-600">Register</a>
+    <a href="login.html" class="text-blue-600 font-semibold">Login</a>
+  </div>
+</nav>
+
+<!-- LOGIN CARD -->
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white p-8 rounded-xl shadow w-full max-w-md">
+
+    <h2 class="text-3xl font-bold text-center mb-6">Login</h2>
+
+    <p id="errorMsg" class="text-red-600 text-center mb-4 hidden">
+      Invalid email or password
+    </p>
+
+    <form id="loginForm" class="space-y-4">
+
+      <input id="email" type="email" placeholder="Email"
+        class="w-full border p-3 rounded" required />
+
+      <input id="password" type="password" placeholder="Password"
+        class="w-full border p-3 rounded" required />
+
+      <button
+        class="w-full bg-blue-600 text-white py-3 rounded font-bold hover:bg-blue-700">
+        Login
+      </button>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000"; // change to Render URL when deployed
+const errorMsg = document.getElementById("errorMsg");
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  errorMsg.classList.add("hidden");
+
+  const form = new URLSearchParams();
+  form.append("username", email.value);
+  form.append("password", password.value);
+
+  try {
+    const res = await fetch(`${API}/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: form
+    });
+
+    if (!res.ok) {
+      errorMsg.classList.remove("hidden");
+      return;
+    }
+
+    const data = await res.json();
+
+    // ✅ STORE TOKEN (IMPORTANT)
+    localStorage.setItem("eew_token", data.access_token);
+
+    // ✅ REDIRECT
+    window.location.replace("hero.html");
+
+  } catch (err) {
+    errorMsg.classList.remove("hidden");
+  }
+});
+</script>
+
+</body>
+</html>

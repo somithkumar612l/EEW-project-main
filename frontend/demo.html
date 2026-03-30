@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Prediction — EEW System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    #map { height: 330px; border-radius: 10px; }
+    .alert-banner {
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: none;
+    }
+    .danger { border-left: 6px solid #ef4444; background: #fee2e2; }
+    .moderate { border-left: 6px solid #f59e0b; background: #fffbeb; }
+    .safe { border-left: 6px solid #10b981; background: #ecfdf5; }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- ================= NAVBAR ================= -->
+<nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-gray-800">EEW System</h1>
+
+  <div class="space-x-6 flex items-center">
+    <a id="homeLink" href="index.html" class="text-gray-700 hover:text-blue-600">Home</a>
+    <a href="predict.html" class="text-blue-600 font-semibold">Prediction</a>
+
+    <a id="registerBtn" href="register.html"
+       class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+      Register
+    </a>
+
+    <a id="loginBtn" href="login.html"
+       class="border border-blue-600 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50">
+      Login
+    </a>
+
+    <button id="logoutBtn"
+       class="hidden border border-red-600 text-red-600 px-4 py-2 rounded-md hover:bg-red-50 transition">
+      Logout
+    </button>
+  </div>
+</nav>
+
+<!-- ALERT -->
+<div id="alertBanner" class="alert-banner">
+  <div id="alertContent"
+       class="bg-red-600 text-white px-6 py-3 rounded shadow-lg font-bold">
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-6 py-10">
+  <h2 class="text-3xl font-bold text-center mb-8">
+    Earthquake Epicenter Prediction
+  </h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+
+    <!-- INPUT -->
+    <div class="bg-white p-6 rounded shadow">
+      <h3 class="font-bold mb-2">P-Wave Input</h3>
+
+      <label>Station Codes</label>
+      <textarea id="codes" rows="6" class="w-full border p-2 mt-1"></textarea>
+
+      <label class="block mt-3">Arrival Times (seconds)</label>
+      <textarea id="times" rows="6" class="w-full border p-2 mt-1"></textarea>
+
+      <div class="grid grid-cols-3 gap-2 mt-4">
+        <button id="runBtn" class="bg-blue-600 text-white py-2 rounded">Predict</button>
+        <button id="sampleBtn" class="bg-gray-300 py-2 rounded">Japan Sample</button>
+        <button id="refreshBtn" class="bg-gray-200 py-2 rounded">Refresh</button>
+      </div>
+    </div>
+
+    <!-- WARNINGS -->
+    <div class="bg-white p-6 rounded shadow">
+      <h3 class="font-bold mb-2">City Early-Warning Times</h3>
+      <div id="warnings" class="space-y-3 text-sm max-h-[650px] overflow-auto"></div>
+    </div>
+
+    <!-- MAP -->
+    <div>
+      <div class="bg-white p-4 rounded shadow mb-4">
+        <h3 class="font-bold mb-2">Epicenter Map + S-Wave</h3>
+        <div id="map"></div>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-bold mb-2">Prediction Summary</h3>
+        <div id="summary" class="text-sm text-gray-700">No prediction yet.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<audio id="dangerSound"
+  src="https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg"></audio>
+
+<!-- ================= ORIGINAL LOGIC (UNCHANGED) ================= -->
+<script>
+/* UTIL */
+function secToHuman(sec) {
+  if (sec == null) return "N/A";
+  if (sec <= 0) return "0s";
+  if (sec < 60) return Math.round(sec) + "s";
+  return Math.floor(sec/60) + "m " + Math.round(sec%60) + "s";
+}
+
+/* MAP */
+const map = L.map('map').setView([36,138],5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+let epicenterMarker = null;
+let sWaveRing = null;
+let cityMarkers = [];
+let countdownTimer = null;
+
+/* COUNTDOWN */
+function startCountdown(sec) {
+  clearInterval(countdownTimer);
+  let t = Math.floor(sec);
+  countdownTimer = setInterval(() => {
+    alertContent.innerText = `⚠️ EARTHQUAKE EARLY WARNING — ${t}s`;
+    t--;
+    if (t <= 0) {
+      clearInterval(countdownTimer);
+      alertBanner.style.display = "none";
+      dangerSound.pause();
+      dangerSound.currentTime = 0;
+    }
+  }, 1000);
+}
+
+/* ELEMENTS */
+const runBtn = document.getElementById("runBtn");
+const sampleBtn = document.getElementById("sampleBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const warningsDiv = document.getElementById("warnings");
+const summary = document.getElementById("summary");
+const alertBanner = document.getElementById("alertBanner");
+const alertContent = document.getElementById("alertContent");
+const dangerSound = document.getElementById("dangerSound");
+
+/* REFRESH */
+refreshBtn.onclick = () => {
+  clearInterval(countdownTimer);
+  dangerSound.pause();
+  dangerSound.currentTime = 0;
+  alertBanner.style.display = "none";
+  warningsDiv.innerHTML = "";
+  summary.innerHTML = "No prediction yet.";
+  document.getElementById("codes").value = "";
+  document.getElementById("times").value = "";
+  if (epicenterMarker) map.removeLayer(epicenterMarker);
+  if (sWaveRing) map.removeLayer(sWaveRing);
+  cityMarkers.forEach(m => map.removeLayer(m));
+  cityMarkers = [];
+  map.setView([36,138],5);
+};
+
+/* SAMPLE */
+const stations = ["N2OHR","HU.RBN","HU.TNK","HU.TOI","KNG.HR","OSA.KB"];
+sampleBtn.onclick = () => {
+  const pick = stations.sort(() => 0.5 - Math.random()).slice(0, 4);
+  const times = pick.map(() => (1 + Math.random()*4).toFixed(2));
+  document.getElementById("codes").value = pick.join("\n");
+  document.getElementById("times").value = times.join("\n");
+  summary.innerHTML = "Sample data loaded. Click Predict.";
+};
+
+/* PREDICT — CITY LOGIC KEPT */
+runBtn.onclick = async () => {
+  warningsDiv.innerHTML = "";
+  alertBanner.style.display = "none";
+
+  const res = await fetch("http://127.0.0.1:8000/predict", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      station_codes: document.getElementById("codes").value.trim().split("\n"),
+      arrival_times: document.getElementById("times").value.trim().split("\n").map(Number),
+      mode: "japan_sample"
+    })
+  });
+
+  const data = await res.json();
+
+  summary.innerHTML = `
+    <b>Epicenter:</b> ${data.pred_lat}, ${data.pred_lon}<br>
+    <b>Earliest Station:</b> ${data.earliest_station}
+  `;
+
+  epicenterMarker && map.removeLayer(epicenterMarker);
+  sWaveRing && map.removeLayer(sWaveRing);
+  cityMarkers.forEach(m => map.removeLayer(m));
+  cityMarkers = [];
+
+  epicenterMarker = L.marker([data.pred_lat, data.pred_lon]).addTo(map);
+  map.setView([data.pred_lat, data.pred_lon], 6);
+
+  sWaveRing = L.circle([data.pred_lat, data.pred_lon], {
+    radius: data.s_wave_ring_max_km * 1000,
+    color: "red",
+    fill: false
+  }).addTo(map);
+
+  const cityCoords = {
+    Tokyo:[35.6762,139.6503], Osaka:[34.6937,135.5023],
+    Sapporo:[43.0618,141.3545], Sendai:[38.2682,140.8694],
+    Nagoya:[35.1815,136.9066], Fukuoka:[33.5903,130.4017],
+    Kyoto:[35.0116,135.7681]
+  };
+
+  let minWarning = Infinity;
+  let danger = false;
+
+  for (const [city, w] of Object.entries(data.warnings)) {
+    minWarning = Math.min(minWarning, w.warning_seconds ?? Infinity);
+
+    const div = document.createElement("div");
+    div.className = "p-3 rounded " +
+      (w.risk_level === "Danger" ? "danger" :
+       w.risk_level === "Moderate" ? "moderate" : "safe");
+
+    div.innerHTML = `
+      <b>${city}</b> — ${w.risk_level}<br>
+      Distance: ${w.distance_km} km<br>
+      S-wave: ${secToHuman(w.warning_seconds)}
+    `;
+    warningsDiv.appendChild(div);
+
+    const color =
+      w.risk_level === "Danger" ? "red" :
+      w.risk_level === "Moderate" ? "orange" : "green";
+
+    cityMarkers.push(
+      L.circleMarker(cityCoords[city], {
+        radius: 8, color, fillColor: color, fillOpacity: 0.8
+      }).addTo(map)
+    );
+
+    if (w.risk_level === "Danger") danger = true;
+  }
+
+  if (danger && minWarning < Infinity) {
+    alertBanner.style.display = "block";
+    dangerSound.play().catch(()=>{});
+    startCountdown(minWarning);
+  }
+};
+</script>
+
+<!-- LOGIN LOGIC -->
+<script>
+  const token = localStorage.getItem("eew_token");
+  const homeLink = document.getElementById("homeLink");
+  const registerBtn = document.getElementById("registerBtn");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (token) {
+    homeLink.href = "hero.html";
+    registerBtn.classList.add("hidden");
+    loginBtn.classList.add("hidden");
+    logoutBtn.classList.remove("hidden");
+  }
+
+  logoutBtn.onclick = () => {
+    localStorage.removeItem("eew_token");
+    window.location.href = "index.html";
+  };
+</script>
+
+</body>
+</html>

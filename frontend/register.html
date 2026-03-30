@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Register — EEW System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<nav class="bg-white shadow px-6 py-4 flex justify-between">
+  <h1 class="text-2xl font-bold">EEW System</h1>
+  <div class="space-x-4">
+    <a href="index.html">Home</a>
+    <a href="register.html" class="text-blue-600 font-semibold">Register</a>
+    <a href="login.html">Login</a>
+  </div>
+</nav>
+
+<div class="min-h-screen flex items-center justify-center">
+  <div class="bg-white p-8 rounded shadow w-full max-w-md">
+
+    <h2 class="text-2xl font-bold mb-4 text-center">Create Account</h2>
+
+    <p id="errorMsg" class="text-red-600 text-center mb-4 hidden"></p>
+
+    <form id="registerForm" class="space-y-4">
+      <input id="name" placeholder="Full Name" class="w-full p-3 border rounded" required>
+      <input id="email" placeholder="Email" class="w-full p-3 border rounded" required>
+      <input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded" required>
+      <input id="confirm" type="password" placeholder="Confirm Password" class="w-full p-3 border rounded" required>
+
+      <button class="w-full bg-blue-600 text-white p-3 rounded">
+        Create Account
+      </button>
+    </form>
+
+  </div>
+</div>
+
+<script>
+const form = document.getElementById("registerForm");
+const errorMsg = document.getElementById("errorMsg");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  errorMsg.classList.add("hidden");
+
+  const name = nameInput = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirm = document.getElementById("confirm").value;
+
+  if (password !== confirm) {
+    errorMsg.textContent = "Passwords do not match";
+    errorMsg.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://127.0.0.1:8000/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        city: "Unknown",
+        password
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      errorMsg.textContent = data.detail || "Registration failed";
+      errorMsg.classList.remove("hidden");
+      return;
+    }
+
+    alert("Registration successful!");
+    window.location.href = "login.html";
+
+  } catch (err) {
+    errorMsg.textContent = "Server not reachable";
+    errorMsg.classList.remove("hidden");
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>EEW System — Home</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-800">EEW System</h1>
+
+    <div class="space-x-4">
+      <a id="homeLink" href="index.html" class="text-blue-600 font-semibold">Home</a>
+
+      <a href="register.html"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+        Register
+      </a>
+
+      <a href="login.html"
+        class="border border-blue-600 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50 transition">
+        Login
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="px-6 py-16 bg-white text-center shadow-sm">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight">
+      Earthquake Early Warning System
+    </h2>
+
+    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+      A machine-learning-powered system that predicts earthquake epicenters using seismic P-wave arrival times.
+    </p>
+
+    <!-- ✅ REDIRECT TO demo.html -->
+    <a href="demo.html"
+      class="inline-block mt-8 bg-blue-600 text-white px-8 py-3 rounded-md text-lg font-semibold shadow hover:bg-blue-700 transition">
+      Try Prediction Demo
+    </a>
+  </section>
+
+  <!-- INFO SECTION -->
+  <section class="px-6 py-14 bg-gray-50 text-center">
+    <h3 class="text-3xl font-bold text-gray-800">What is an Early Warning System?</h3>
+
+    <p class="mt-4 text-gray-600 max-w-2xl mx-auto text-lg">
+      An Earthquake Early Warning (EEW) system provides alerts seconds before major shaking occurs.
+      This project demonstrates how machine learning can estimate the origin of an earthquake using
+      only the first seismic waves detected by sensors.
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-6 bg-gray-900 text-gray-300 mt-auto">
+    © 2025 Earthquake Early Warning System — All Rights Reserved.
+  </footer>
+
+  <!-- SMART LOGIN REDIRECTION -->
+  <script>
+    const token = localStorage.getItem("eew_token");
+    const homeLink = document.getElementById("homeLink");
+
+    if (token) {
+      homeLink.href = "hero.html";  // Redirect Home → hero.html if logged-in
+    }
+  </script>
+
+</body>
+</html>

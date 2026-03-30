@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Help — EEW System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">EEW System</h1>
+
+    <div class="space-x-6 flex items-center">
+
+      <a id="homeLink" href="index.html" class="text-gray-700 hover:text-blue-600">Home</a>
+      <a href="predict.html" class="text-gray-700 hover:text-blue-600">Prediction</a>
+      <a href="dataset.html" class="text-gray-700 hover:text-blue-600">Dataset</a>
+      <a href="help.html" class="text-blue-600 font-semibold">Help</a>
+      <a href="about.html" class="text-gray-700 hover:text-blue-600">About</a>
+
+      <!-- Shown when NOT logged in -->
+      <a id="registerBtn"
+        href="register.html"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+        Register
+      </a>
+
+      <a id="loginBtn"
+        href="login.html"
+        class="border border-blue-600 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50">
+        Login
+      </a>
+
+      <!-- Visible only when logged in -->
+      <button id="logoutBtn"
+        class="hidden border border-red-600 text-red-600 px-4 py-2 rounded-md hover:bg-red-50 transition">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- HELP CONTENT -->
+  <section class="py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+
+      <h2 class="text-4xl font-bold text-gray-800 text-center mb-10">
+        Help & Support
+      </h2>
+
+      <!-- FAQ Section -->
+      <div class="bg-white shadow-xl rounded-2xl p-10 mb-12">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Frequently Asked Questions</h3>
+
+        <div class="space-y-6">
+
+          <div>
+            <h4 class="text-xl font-medium text-gray-800">1. How does the prediction system work?</h4>
+            <p class="text-gray-700 mt-2">
+              The system uses machine learning to analyze seismic station P-wave arrival times and estimate the earthquake’s epicenter.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-medium text-gray-800">2. What data do I need to enter?</h4>
+            <p class="text-gray-700 mt-2">
+              Enter station codes and their P-wave arrival times. The system predicts the epicenter location using trained ML models.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-medium text-gray-800">3. Why is prediction not accurate?</h4>
+            <p class="text-gray-700 mt-2">
+              Accuracy depends on station network density and input quality. This is an educational demonstration system.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-medium text-gray-800">4. Can it detect real earthquakes?</h4>
+            <p class="text-gray-700 mt-2">
+              No, this tool is for academic use only.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TROUBLESHOOTING -->
+      <div class="bg-white shadow-xl rounded-2xl p-10 mb-12">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Troubleshooting</h3>
+
+        <ul class="list-disc ml-6 text-gray-700 text-lg space-y-3">
+          <li>Verify input fields are filled correctly.</li>
+          <li>Ensure station codes appear in the dataset used to train the model.</li>
+          <li>Backend server must be running for predictions.</li>
+          <li>Check Tailwind CDN connectivity if styling looks broken.</li>
+        </ul>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="bg-white shadow-xl rounded-2xl p-10">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Contact Support</h3>
+
+        <p class="text-gray-700 text-lg mb-4">
+          Need more help? Contact the system developer:
+        </p>
+
+        <div class="bg-gray-50 p-6 rounded-xl shadow">
+          <p class="text-gray-800 font-medium text-lg">Email:</p>
+          <p class="text-gray-700 mb-4">support@eew-system.com (placeholder)</p>
+
+          <p class="text-gray-800 font-medium text-lg">GitHub:</p>
+          <p class="text-gray-700">https://github.com/your-project</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-6 bg-gray-900 text-gray-300">
+    © 2025 Earthquake Early Warning System — All Rights Reserved.
+  </footer>
+
+  <!-- LOGIN LOGIC FOR NAVBAR -->
+  <script>
+    const token = localStorage.getItem("eew_token");
+
+    const homeLink = document.getElementById("homeLink");
+    const registerBtn = document.getElementById("registerBtn");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // If logged in → redirect HOME to hero.html
+    if (token) {
+      homeLink.href = "hero.html";
+      registerBtn.classList.add("hidden");
+      loginBtn.classList.add("hidden");
+      logoutBtn.classList.remove("hidden");
+    }
+
+    // Logout
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("eew_token");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>
